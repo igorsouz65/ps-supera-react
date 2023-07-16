@@ -2,18 +2,28 @@ import { useEffect } from 'react';
 import { useState } from "react";
 import moment from 'moment/moment';
 
+
+
+
 function Transferencias() {
 
   const API = 'http://localhost:8080/v1/transferencias';
 
+  const [filtroNome, setFiltroNome] = useState('');
   const [filtroDataInicio, setFiltroDataInicio] = useState('');
   const [filtroDataFim, setFiltroDataFim] = useState('');
-  const [dadosFiltrados, setDadosFiltrados] = useState(null);
+  const [dados, setDados] = useState([]);
+  const [dadosFiltrados, setDadosFiltrados] = useState([]);
 
 
   useEffect(() => {
     const fetchData = async () => {
       let queryParams = '/';
+
+      if (filtroNome) {
+        queryParams += `${filtroNome}/`;
+      }
+
 
       if (filtroDataInicio) {
         const dataFormatada = moment(filtroDataInicio, 'DD/MM/YYYY').format('YYYY-MM-DDTHH:mm:ss');
@@ -30,9 +40,9 @@ function Transferencias() {
         const data = await response.json();
 
         if (!Array.isArray(data)){
-          setDadosFiltrados([data]);
+          setDados([data]);
         } else {
-          setDadosFiltrados(data);
+          setDados(data);
         }
 
         
@@ -42,17 +52,47 @@ function Transferencias() {
     };
 
     fetchData();
-  }, [filtroDataInicio, filtroDataFim]);
+  }, []);
+
+
+  function filtrarDados() {
+    let dadosFiltrados = dados;
+
+    // Filtra os dados com base nos filtros
+    const nomeOperadorFiltrado = filtroNome?.toLowerCase() ?? '';
+    if (filtroNome) {
+      dadosFiltrados = dadosFiltrados.filter(item => item.nomeOperadorTransacao && item.nomeOperadorTransacao.toLowerCase().includes(nomeOperadorFiltrado));
+    }
+
+    if (filtroDataInicio) {
+      dadosFiltrados = dadosFiltrados.filter(item => moment(item.dataTransferencia).isSameOrAfter(filtroDataInicio, 'day'));
+    }
+
+    if (filtroDataFim) {
+      dadosFiltrados = dadosFiltrados.filter(item => moment(item.dataTransferencia).isSameOrBefore(filtroDataFim, 'day'));
+    }
+
+    setDadosFiltrados(dadosFiltrados);
+  }
 
   if (dadosFiltrados === null) {
     return <div>Carregando...</div>; // Exibe uma mensagem de carregamento enquanto os dados são obtidos
   }
 
-
+  function formatarString(str) {
+    return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
+  }
+  
 
   return (
 
     <div>
+      <input
+        type="text"
+        value={filtroNome}
+        onChange={e => setFiltroNome(e.target.value)}
+        placeholder="Nome do Operador"
+      />
       <input
         type="text"
         value={filtroDataInicio}
@@ -66,21 +106,23 @@ function Transferencias() {
         placeholder="Data final"
       />
 
+<button onClick={filtrarDados} className="button-custom">Filtrar</button>
+
       <table>
         <thead>
           <tr>
-            <th>Coluna 1</th>
-            <th>Coluna 2</th>
-            <th>Coluna 3</th>
-            <th>Coluna 4</th>
+            <th>Data de Transferências</th>
+            <th>Valor</th>
+            <th>Tipo</th>
+            <th>Nome do Operador da transação</th>
           </tr>
         </thead>
         <tbody>
           {dadosFiltrados.map(item => (
             <tr key={item.id}>
-              <td>{item.dataTransferencia}</td>
-              <td>{item.valor}</td>
-              <td>{item.tipo}</td>
+              <td>{moment(item.dataTransferencia).format('DD/MM/YYYY')}</td>
+              <td>{item.valor.toLocaleString('pt-BR')}</td>
+              <td>{formatarString(item.tipo)}</td>
               <td>{item.nomeOperadorTransacao}</td>
             </tr>
           ))}

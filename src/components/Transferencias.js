@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useState } from "react";
 import moment from 'moment/moment';
 
-
+import './transferencias.css';
 
 
 function Transferencias() {
@@ -52,6 +52,7 @@ function Transferencias() {
     };
 
     fetchData();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
@@ -91,24 +92,27 @@ function Transferencias() {
         type="text"
         value={filtroNome}
         onChange={e => setFiltroNome(e.target.value)}
+        className='input-custom'
         placeholder="Nome do Operador"
       />
       <input
         type="text"
         value={filtroDataInicio}
         onChange={e => setFiltroDataInicio(e.target.value)}
+        className='input-custom'
         placeholder="Data inicial"
       />
       <input
         type="text"
         value={filtroDataFim}
         onChange={e => setFiltroDataFim(e.target.value)}
+        className='input-custom'
         placeholder="Data final"
       />
 
-<button onClick={filtrarDados} className="button-custom">Filtrar</button>
+<button onClick={filtrarDados}>Filtrar</button>
 
-      <table>
+      <table className="transferencias-table">
         <thead>
           <tr>
             <th>Data de Transferências</th>

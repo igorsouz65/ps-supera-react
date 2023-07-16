@@ -1,0 +1,46 @@
+.transferencias-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  .transferencias-table th,
+  .transferencias-table td {
+    padding: 10px;
+    text-align: left;
+    border: 1px solid #ccc;
+  }
+  
+  .transferencias-table th {
+    background-color: #f2f2f2;
+  }
+  
+  .transferencias-table tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  .transferencias-table tbody tr:hover {
+    background-color: #e6e6e6;
+  }
+  
+.input-custom {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    color: #333;
+  }
+  
+  .button-custom {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+  }
+  
+  .button-custom:hover {
+    background-color: #0056b3;
+  }

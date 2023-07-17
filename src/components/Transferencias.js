@@ -14,7 +14,8 @@ function Transferencias() {
   const [filtroDataFim, setFiltroDataFim] = useState('');
   const [dados, setDados] = useState([]);
   const [dadosFiltrados, setDadosFiltrados] = useState([]);
-
+  const [saldoTotal, setSaldoTotal] = useState(0);
+  const [saldoTotalFiltrado, setSaldoTotalFiltrado] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,20 +40,26 @@ function Transferencias() {
         const response = await fetch(API + `${queryParams}`);
         const data = await response.json();
 
-        if (!Array.isArray(data)){
+        if (!Array.isArray(data)) {
           setDados([data]);
         } else {
           setDados(data);
         }
 
-        
+        // Calcular saldo total
+        const total = data.reduce((acc, item) => acc + item.valor, 0);
+        setSaldoTotal(total);
+
+
+
+
       } catch (error) {
         console.error('Erro ao buscar os dados da API:', error);
       }
     };
 
     fetchData();
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
 
@@ -73,6 +80,10 @@ function Transferencias() {
       dadosFiltrados = dadosFiltrados.filter(item => moment(item.dataTransferencia).isSameOrBefore(filtroDataFim, 'day'));
     }
 
+    // Calcular saldo total filtrado
+    const totalFiltrado = dadosFiltrados.reduce((acc, item) => acc + item.valor, 0);
+    setSaldoTotalFiltrado(totalFiltrado);
+
     setDadosFiltrados(dadosFiltrados);
   }
 
@@ -83,34 +94,47 @@ function Transferencias() {
   function formatarString(str) {
     return str.toLowerCase().replace(/\b\w/g, c => c.toUpperCase());
   }
-  
+
 
   return (
 
     <div>
-      <input
-        type="text"
-        value={filtroNome}
-        onChange={e => setFiltroNome(e.target.value)}
-        className='input-custom'
-        placeholder="Nome do Operador"
-      />
-      <input
-        type="text"
-        value={filtroDataInicio}
-        onChange={e => setFiltroDataInicio(e.target.value)}
-        className='input-custom'
-        placeholder="Data inicial"
-      />
-      <input
-        type="text"
-        value={filtroDataFim}
-        onChange={e => setFiltroDataFim(e.target.value)}
-        className='input-custom'
-        placeholder="Data final"
-      />
+      <div className="button-group">
+        <input
+          type="text"
+          value={filtroNome}
+          onChange={e => setFiltroNome(e.target.value)}
+          className='input-custom'
+          placeholder="Nome do Operador"
+        />
+        <input
+          type="text"
+          value={filtroDataInicio}
+          onChange={e => setFiltroDataInicio(e.target.value)}
+          className='input-custom'
+          placeholder="Data inicial"
+        />
+        <input
+          type="text"
+          value={filtroDataFim}
+          onChange={e => setFiltroDataFim(e.target.value)}
+          className='input-custom'
+          placeholder="Data final"
+        />
 
-<button onClick={filtrarDados}>Filtrar</button>
+        <button onClick={filtrarDados} className="button-custom">Filtrar</button>
+
+      </div>
+      <div className='saldo-wrapper'>
+        <div className="saldo-container">
+          <span className="saldo-label">Saldo Total:</span>
+          <span className="saldo-value">{saldoTotal.toLocaleString('pt-BR')}</span>
+        </div>
+        <div className="saldo-container">
+          <span className="saldo-label">Saldo Total Filtrado:</span>
+          <span className="saldo-value">{saldoTotalFiltrado.toLocaleString('pt-BR')}</span>
+        </div>
+      </div>
 
       <table className="transferencias-table">
         <thead>

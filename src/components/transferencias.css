@@ -29,6 +29,7 @@
     border-radius: 4px;
     font-size: 14px;
     color: #333;
+    margin: 0 5px;
   }
   
   .button-custom {
@@ -43,4 +44,32 @@
   
   .button-custom:hover {
     background-color: #0056b3;
+  }
+
+  .button-group {
+    margin: 0 5px; /* Ajuste a margem conforme necessário */
+  }
+
+  .saldo-container {
+    display: flex;
+    justify-content: center;
+    height: 50px;
+    margin: 0 10px;
+  }
+  
+  .saldo-label {
+    font-weight: bold;
+    margin-right: 10px;
+  }
+  
+  .saldo-value {
+    font-size: 18px;
+    color: #333;
+  }
+
+  .saldo-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+    margin-top: 20px;
   }
